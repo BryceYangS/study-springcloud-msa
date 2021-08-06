@@ -1,4 +1,4 @@
-package com.example.apigatewayservice;
+package com.example.apigatewayservice.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -31,8 +31,10 @@ public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Conf
 		};
 	}
 
-	static class Config{
+	static class Config {
 		// Put the configuration properties
-	};
+	}
+
+	;
 
 }

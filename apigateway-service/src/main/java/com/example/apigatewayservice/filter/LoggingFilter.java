@@ -1,4 +1,4 @@
-package com.example.apigatewayservice;
+package com.example.apigatewayservice.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.OrderedGatewayFilter;
@@ -23,32 +23,34 @@ public class LoggingFilter extends AbstractGatewayFilterFactory<LoggingFilter.Co
 	public GatewayFilter apply(Config config) {
 
 		GatewayFilter filter = new OrderedGatewayFilter((exchange, chain) -> {
-				ServerHttpRequest request = exchange.getRequest();
-				ServerHttpResponse response = exchange.getResponse();
+			ServerHttpRequest request = exchange.getRequest();
+			ServerHttpResponse response = exchange.getResponse();
 
-				log.info("Logging PRE baseMessage: {}", config.getBaseMessage());
+			log.info("Logging PRE baseMessage: {}", config.getBaseMessage());
 
-				if (config.isPreLogger()) {
-					log.info("Logging Filter Start: request id -> {}", request.getId());
+			if (config.isPreLogger()) {
+				log.info("Logging Filter Start: request id -> {}", request.getId());
+			}
+
+			// Logging Post Filter
+			return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+				if (config.isPostLogger()) {
+					log.info("Logging POST Filter: response code -> {}", response.getStatusCode());
 				}
-
-				// Logging Post Filter
-				return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-					if (config.isPostLogger()) {
-						log.info("Logging POST Filter: response code -> {}", response.getStatusCode());
-					}
-				}));
-			}, Ordered.HIGHEST_PRECEDENCE); // 해당 필터가 가장 먼저 실행됨
+			}));
+		}, Ordered.HIGHEST_PRECEDENCE); // 해당 필터가 가장 먼저 실행됨
 
 		return filter;
 	}
 
 	@Data
-	public static class Config{
+	public static class Config {
 		// Put the configuration properties
 		private String baseMessage;
 		private boolean preLogger;
 		private boolean postLogger;
-	};
+	}
+
+	;
 
 }

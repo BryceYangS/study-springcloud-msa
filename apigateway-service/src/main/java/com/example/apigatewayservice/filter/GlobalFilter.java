@@ -1,4 +1,4 @@
-package com.example.apigatewayservice;
+package com.example.apigatewayservice.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -39,11 +39,13 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 	}
 
 	@Data
-	public static class Config{
+	public static class Config {
 		// Put the configuration properties
 		private String baseMessage;
 		private boolean preLogger;
 		private boolean postLogger;
-	};
+	}
+
+	;
 
 }
